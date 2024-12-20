@@ -1,0 +1,76 @@
+{
+	"name": "purple-rotation",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "Template repository for using TypeScript",
+	"scripts": {
+		"dev": "astro dev",
+		"start": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"test": "ava || echo 'Skip'",
+		"pretest": "tsc",
+		"prebuild": "rimraf dist",
+		"lint": "npm run lint:eslint && npm run lint:format",
+		"lint:eslint": "eslint . --fix",
+		"lint:format": "prettier --write '**/*.{ts,js,json,md,yml}'",
+		"typecheck": "astro check && tsc --noEmit",
+		"prepare": "husky"
+	},
+	"author": "Dev Protocol",
+	"license": "MPL-2.0",
+	"dependencies": {
+		"@astrojs/vercel": "^7.8.1",
+		"@astrojs/vue": "^4.5.0",
+		"@devprotocol/util-ts": "4.0.0",
+		"@ffmpeg-installer/ffmpeg": "^1.1.0",
+		"@upstash/redis": "^1.34.3",
+		"@vercel/blob": "^0.27.0",
+		"@vercel/edge": "^1.1.2",
+		"astro": "^4.15.4",
+		"ethers": "^6.13.2",
+		"fluent-ffmpeg": "^2.1.3",
+		"nanoid": "^5.0.7",
+		"ramda": "0.30.1",
+		"redis": "^4.7.0",
+		"vue": "^3.5.4"
+	},
+	"devDependencies": {
+		"@astrojs/check": "^0.9.3",
+		"@ava/typescript": "5.0.0",
+		"@types/dotenv": "8.2.3",
+		"@types/fluent-ffmpeg": "^2.1.27",
+		"@types/node": "22.10.2",
+		"@types/ramda": "0.30.2",
+		"@typescript-eslint/parser": "8.18.1",
+		"@vercel/node": "^5.0.0",
+		"ava": "6.2.0",
+		"dotenv": "16.4.7",
+		"eslint": "9.17.0",
+		"eslint-config-prettier": "9.1.0",
+		"eslint-plugin-functional": "7.2.0",
+		"husky": "9.1.7",
+		"prettier": "3.4.2",
+		"rimraf": "6.0.1",
+		"type-fest": "^4.26.1",
+		"typescript": "5.7.2",
+		"typescript-eslint": "^8.5.0"
+	},
+	"ava": {
+		"files": [
+			"**/*.test.ts"
+		],
+		"typescript": {
+			"rewritePaths": {
+				"/": "dist/"
+			},
+			"compile": false
+		}
+	},
+	"repository": "git+https://github.com/dev-protocol/template-repos-ts.git",
+	"bugs": {
+		"url": "https://github.com/dev-protocol/template-repos-ts/issues"
+	},
+	"homepage": "https://github.com/dev-protocol/template-repos-ts#readme",
+	"packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}
