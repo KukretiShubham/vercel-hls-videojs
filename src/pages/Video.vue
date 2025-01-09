@@ -2,7 +2,6 @@
   <!-- Container for our video.js player -->
   <div data-vjs-player>
     <video ref="videoPlayer" class="video-js">
-      
     </video>
   </div>
 </template>
@@ -34,7 +33,7 @@ export default {
     },
     muted: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   setup(props) {
@@ -59,13 +58,12 @@ export default {
 
     onMounted(() => {
       // Initialize the video.js player
-      console.log({props: props})
       playerInstance.value = videojs(videoPlayer.value, {
         ...options,
-        controls: props.controls,
-        autoplay: props.autoplay,
-        loop: props.loop,
-        muted: props.muted,
+        controls: false,
+        autoplay: true,
+        loop: true,
+        muted: true,
         sources: [props.src],
       })
     })
