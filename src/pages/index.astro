@@ -3,13 +3,10 @@ import Video_ from './Video.vue'
 import Debug_ from './debug.vue'
 const url = Astro.url
 const newURL = new URL(url)
-console.log({ newURL })
 
 // Pass the search property (query string) to URLSearchParams
 const searchParams = new URLSearchParams(newURL.search)
-console.log({ searchParams })
 const src = searchParams.get('src')
-console.log({ src })
 ---
 
 <div>
