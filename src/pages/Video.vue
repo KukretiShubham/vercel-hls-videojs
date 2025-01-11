@@ -1,7 +1,7 @@
 <template>
   <!-- Container for our video.js player -->
   <div data-vjs-player>
-    <video ref="videoPlayer" class="video-js">
+    <video ref="videoPlayer" class="video-js" playsinline>
     </video>
   </div>
 </template>
