@@ -60,10 +60,10 @@ export default {
       // Initialize the video.js player
       playerInstance.value = videojs(videoPlayer.value, {
         ...options,
-        controls: true,
-        autoplay: true,
-        loop: true,
-        muted: true,
+        controls: props.controls,
+        autoplay: props.autoplay,
+        loop: props.loop,
+        muted: props.muted,
         sources: [props.src],
       })
     })

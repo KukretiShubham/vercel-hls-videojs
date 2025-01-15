@@ -1,22 +1,72 @@
 ---
 import Video_ from './Video.vue'
-import Debug_ from './debug.vue'
-const url = Astro.url
-const newURL = new URL(url)
 
-// Pass the search property (query string) to URLSearchParams
-const searchParams = new URLSearchParams(newURL.search)
-const src = searchParams.get('src')
+// Extract search parameters from incoming request.
+const { searchParams } = new URL(Astro.request.url)
+
+// Provide a default src if none is passed in the query string.
+const defaultSrc = 'https://3uxfsg9tkgojomkd.public.blob.vercel-storage.com/0x0000000000000000000000000000000000000000/CER3_-4husUQlsiYcy6VO/index-xwU1lHgqSfpJ3wMHsNfWXgVeUCBTvY.m3u8'
+
+// A small helper to convert query param strings to booleans (with a default).
+function booleanFromParam(param: string | null, defaultValue: boolean) {
+  if (param === null) return defaultValue
+  return param === 'true'
+}
+
+// Pull values from query params or fallback to defaults
+const src = searchParams.get('src') ?? defaultSrc
+const controls = booleanFromParam(searchParams.get('controls'), true)
+const autoplay = booleanFromParam(searchParams.get('autoplay'), true)
+const loop = booleanFromParam(searchParams.get('loop'), true)
+const muted = booleanFromParam(searchParams.get('muted'), false)
 ---
 
-<div>
-	<Video_
-		client:only="vue"
-		src={src}
-		controls="true"
-		autoplay="true"
-		loop="true"
-		muted="false"
-	/>
-	<Debug_ client:load />
-</div>
+<!-- A simple form that updates the URL query params when submitted -->
+<form method="GET" style="margin-bottom: 1rem;">
+  <label for="src" style="display: inline-block; width: 80px;">src:</label>
+  <input
+    type="text"
+    id="src"
+    name="src"
+    value={src}
+    size="50"
+    style="margin-right: 1rem;"
+  />
+
+  <label for="controls" style="display: inline-block; width: 80px;">controls:</label>
+  <select id="controls" name="controls" style="margin-right: 1rem;">
+    <option value="true" selected={controls === true}>true</option>
+    <option value="false" selected={controls === false}>false</option>
+  </select>
+
+  <label for="autoplay" style="display: inline-block; width: 80px;">autoplay:</label>
+  <select id="autoplay" name="autoplay" style="margin-right: 1rem;">
+    <option value="true" selected={autoplay === true}>true</option>
+    <option value="false" selected={autoplay === false}>false</option>
+  </select>
+
+  <label for="loop" style="display: inline-block; width: 80px;">loop:</label>
+  <select id="loop" name="loop" style="margin-right: 1rem;">
+    <option value="true" selected={loop === true}>true</option>
+    <option value="false" selected={loop === false}>false</option>
+  </select>
+
+  <label for="muted" style="display: inline-block; width: 80px;">muted:</label>
+  <select id="muted" name="muted" style="margin-right: 1rem;">
+    <option value="true" selected={muted === true}>true</option>
+    <option value="false" selected={muted === false}>false</option>
+  </select>
+
+  <button type="submit">Apply</button>
+</form>
+
+<!-- The video component is rendered with the chosen values -->
+<Video_
+  client:only="vue"
+  src={src}
+  controls={controls}
+  autoplay={autoplay}
+  loop={loop}
+  muted={muted}
+/>
+
