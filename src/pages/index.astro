@@ -1,16 +1,25 @@
 ---
 import Video_ from './Video.vue'
+import Debug_ from './debug.vue'
 
 // Extract search parameters from incoming request.
 const { searchParams } = new URL(Astro.request.url)
 
 // Provide a default src if none is passed in the query string.
 const defaultSrc = 'https://3uxfsg9tkgojomkd.public.blob.vercel-storage.com/0x0000000000000000000000000000000000000000/CER3_-4husUQlsiYcy6VO/index-xwU1lHgqSfpJ3wMHsNfWXgVeUCBTvY.m3u8'
+const defaultWidth = 640
+const defaultHeight = 360
 
 // A small helper to convert query param strings to booleans (with a default).
 function booleanFromParam(param: string | null, defaultValue: boolean) {
   if (param === null) return defaultValue
   return param === 'true'
+}
+// Helper to read or fallback to an integer
+function intOrDefault(param: string | null, defaultValue: number) {
+  if (!param) return defaultValue
+  const val = parseInt(param, 10)
+  return Number.isNaN(val) ? defaultValue : val
 }
 
 // Pull values from query params or fallback to defaults
@@ -19,54 +28,159 @@ const controls = booleanFromParam(searchParams.get('controls'), true)
 const autoplay = booleanFromParam(searchParams.get('autoplay'), true)
 const loop = booleanFromParam(searchParams.get('loop'), true)
 const muted = booleanFromParam(searchParams.get('muted'), false)
+const width = intOrDefault(searchParams.get('width'), defaultWidth)
+const height = intOrDefault(searchParams.get('height'), defaultHeight)
+const options = {
+		width: 640,
+		height: 360,
+		fill: false,
+		fluid: false,
+		preload: 'meta',
+		liveui: true,
+		playbackRates: [0.5, 1, 1.5, 2],
+		playsinline: true,
+		spatialNavigation: {
+		enabled: true,
+		horizontalSeek: true
+		},
+		controlBar: {
+				skipButtons: {
+				backward: 10,
+				forward: 5,
+				fullscreenToggle: false
+			}
+		},
+		html5: {
+			hls: {
+			enableLowInitialPlaylist: true,
+			smoothQualityChange: true,
+			overrideNative: true,
+			},
+		},
+}
+// Build up the `options` prop from querystring or fallback
+const userOptions = {
+  ...options,
+  width,
+  height,
+}
 ---
 
+<style>
+  /* Simple form styling */
+  .video-config-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+  }
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 120px;
+  }
+  .form-field label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  .form-field input,
+  .form-field select {
+    padding: 0.25rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .apply-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #0076FF;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .apply-button:hover {
+    background-color: #005BB5;
+  }
+</style>
+
 <!-- A simple form that updates the URL query params when submitted -->
-<form method="GET" style="margin-bottom: 1rem;">
-  <label for="src" style="display: inline-block; width: 80px;">src:</label>
-  <input
-    type="text"
-    id="src"
-    name="src"
-    value={src}
-    size="50"
-    style="margin-right: 1rem;"
-  />
+<form method="GET" class="video-config-form">
+  <div class="form-field">
+    <label for="src">Source URL</label>
+    <input
+      type="text"
+      id="src"
+      name="src"
+      value={src}
+      size="50"
+    />
+  </div>
 
-  <label for="controls" style="display: inline-block; width: 80px;">controls:</label>
-  <select id="controls" name="controls" style="margin-right: 1rem;">
-    <option value="true" selected={controls === true}>true</option>
-    <option value="false" selected={controls === false}>false</option>
-  </select>
+  <div class="form-field">
+    <label for="controls">Controls</label>
+    <select id="controls" name="controls">
+      <option value="true" selected={controls === true}>true</option>
+      <option value="false" selected={controls === false}>false</option>
+    </select>
+  </div>
 
-  <label for="autoplay" style="display: inline-block; width: 80px;">autoplay:</label>
-  <select id="autoplay" name="autoplay" style="margin-right: 1rem;">
-    <option value="true" selected={autoplay === true}>true</option>
-    <option value="false" selected={autoplay === false}>false</option>
-  </select>
+  <div class="form-field">
+    <label for="autoplay">Autoplay</label>
+    <select id="autoplay" name="autoplay">
+      <option value="true" selected={autoplay === true}>true</option>
+      <option value="false" selected={autoplay === false}>false</option>
+    </select>
+  </div>
 
-  <label for="loop" style="display: inline-block; width: 80px;">loop:</label>
-  <select id="loop" name="loop" style="margin-right: 1rem;">
-    <option value="true" selected={loop === true}>true</option>
-    <option value="false" selected={loop === false}>false</option>
-  </select>
+  <div class="form-field">
+    <label for="loop">Loop</label>
+    <select id="loop" name="loop">
+      <option value="true" selected={loop === true}>true</option>
+      <option value="false" selected={loop === false}>false</option>
+    </select>
+  </div>
 
-  <label for="muted" style="display: inline-block; width: 80px;">muted:</label>
-  <select id="muted" name="muted" style="margin-right: 1rem;">
-    <option value="true" selected={muted === true}>true</option>
-    <option value="false" selected={muted === false}>false</option>
-  </select>
+  <div class="form-field">
+    <label for="muted">Muted</label>
+    <select id="muted" name="muted">
+      <option value="true" selected={muted === true}>true</option>
+      <option value="false" selected={muted === false}>false</option>
+    </select>
+  </div>
 
-  <button type="submit">Apply</button>
+  <div class="form-field">
+    <label for="width">Width</label>
+    <input
+      type="number"
+      id="width"
+      name="width"
+      value={width}
+    />
+  </div>
+
+  <div class="form-field">
+    <label for="height">Height</label>
+    <input
+      type="number"
+      id="height"
+      name="height"
+      value={height}
+    />
+  </div>
+
+  <button type="submit" class="apply-button">Apply</button>
 </form>
 
 <!-- The video component is rendered with the chosen values -->
 <Video_
   client:only="vue"
-  src={src}
+  url={src}
   controls={controls}
   autoplay={autoplay}
   loop={loop}
   muted={muted}
+  options={userOptions}
 />
 
+<Debug_ client:load />
